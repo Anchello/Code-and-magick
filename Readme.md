@@ -1,7 +1,7 @@
 # Личный проект «Код и Магия» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Anna Popova](https://up.htmlacademy.ru/javascript/7/user/129884).
-* Наставник: `Неизвестно`.
+* Наставник: [Олег Плотников](https://up.htmlacademy.ru/javascript/7/user/230042).
 
 ---
 
