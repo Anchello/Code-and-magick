@@ -14,7 +14,7 @@
 
     } else if (Array.isArray(a)) {
         var numberOfSteps = 0;
-        
+
         for(var i = 0; i < a.length; i++) {
             numberOfSteps = a[i] + numberOfSteps;
         }
@@ -36,4 +36,4 @@
     }
 }
 
-getMessage();
+window.getMessage = getMessage;
