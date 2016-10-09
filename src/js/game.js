@@ -274,7 +274,6 @@ window.Game = (function() {
 
     this.setDeactivated(false);
   };
-
   Game.prototype = {
     /**
      * Текущий уровень игры.
@@ -403,23 +402,79 @@ window.Game = (function() {
         window.removeEventListener('keydown', this._pauseListener);
       }
     },
-
     /**
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      var drawSreenText = function(screenText) {
+        var SIZE_X = 300;
+        var SIZE_Y = 150;
+        var drawField = function() {
+          var canvas = document.createElement('canvas');
+          canvas.setAttribute('width', SIZE_X);
+          canvas.setAttribute('height', SIZE_Y);
+          var ctx = canvas.getContext('2d');
+
+          ctx.beginPath();
+          ctx.moveTo(60, 10);
+          ctx.lineTo(280, 10);
+          ctx.lineTo(270, 130);
+          ctx.lineTo(50, 140);
+          ctx.closePath();
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.moveTo(50, 0);
+          ctx.lineTo(270, 0);
+          ctx.lineTo(260, 120);
+          ctx.lineTo(40, 130);
+          ctx.closePath();
+          ctx.fillStyle = '#fff';
+          ctx.fill();
+
+          var writeText = function() {
+            ctx.fillStyle = '#000';
+            ctx.font = '16px PT Mono';
+            ctx.textBaseline = 'hanging';
+            ctx.textAlign = 'center';
+
+            var y = SIZE_Y / (screenText.length + 1) - 10;
+
+            for (var i = 0; i < screenText.length; i++) {
+              writeLine(ctx, screenText[i], SIZE_X / 2, y);
+              y = y + 30;
+            }
+          };
+
+          writeText();
+
+          return canvas;
+        };
+
+        var writeLine = function(ctx, line, x, y) {
+          ctx.fillText(line, x, y);
+        };
+
+        document.body.appendChild(drawField());
+      };
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          var screenText = ['Ооо, великий и могучий', 'Пендальф Синий,', ' ты всех победил!'];
+          drawSreenText(screenText);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          screenText = ['Упс...оказывается', 'ты не так могуч.', 'Подучи заклинания!'];
+          drawSreenText(screenText);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          screenText = ['Пауза!', 'Сходи хоть поешь'];
+          drawSreenText(screenText);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          screenText = ['Привет!', 'Сыграем?', 'Нажми на пробел'];
+          drawSreenText(screenText);
           break;
       }
     },
