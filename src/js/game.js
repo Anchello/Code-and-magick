@@ -406,75 +406,72 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
-      var drawSreenText = function(screenText) {
-        var SIZE_X = 300;
-        var SIZE_Y = 150;
-        var drawField = function() {
-          var canvas = document.createElement('canvas');
-          canvas.setAttribute('width', SIZE_X);
-          canvas.setAttribute('height', SIZE_Y);
-          var ctx = canvas.getContext('2d');
 
-          ctx.beginPath();
-          ctx.moveTo(60, 10);
-          ctx.lineTo(280, 10);
-          ctx.lineTo(270, 130);
-          ctx.lineTo(50, 140);
-          ctx.closePath();
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-          ctx.fill();
+      function drawRect(ctx, x, y, rectWidth, rectHeight, color) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + rectWidth + 10, y);
+        ctx.lineTo(x + rectWidth, y + rectHeight - 10);
+        ctx.lineTo(x - 10, y + rectHeight);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
 
-          ctx.beginPath();
-          ctx.moveTo(50, 0);
-          ctx.lineTo(270, 0);
-          ctx.lineTo(260, 120);
-          ctx.lineTo(40, 130);
-          ctx.closePath();
-          ctx.fillStyle = '#fff';
-          ctx.fill();
+      function wrapText(ctx, text, left, top, maxWidth, lineHeight) {
+        ctx.fillStyle = '#000000';
+        ctx.font = '16px PT Mono';
+        ctx.textBaseline = 'hanging';
+        ctx.textAlign = 'center';
+        var words = text.split(' ');
+        var countWords = words.length;
+        var line = '';
+        for (var n = 0; n < countWords; n++) {
+          var testLine = line + words[n] + ' ';
+          var testWidth = ctx.measureText(testLine).width;
+          if (testWidth > maxWidth) {
+            ctx.fillText(line, left, top);
+            line = words[n] + ' ';
+            top += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+        ctx.fillText(line, left, top);
+      }
 
-          var writeText = function() {
-            ctx.fillStyle = '#000';
-            ctx.font = '16px PT Mono';
-            ctx.textBaseline = 'hanging';
-            ctx.textAlign = 'center';
+      function drawScreenText(ctx, screenText) {
+        var rectWidth = 200;
+        var rectHeight = 130;
+        var centerScreen = {x: (WIDTH - rectWidth) / 2, y: 30};
+        var lineHeight = 20;
+        var padding = {left: 10, top: 30};
+        var maxWidth = rectWidth - padding.left;
+        var left = (centerScreen.x - 10) + padding.left + maxWidth / 2;
+        var top = (centerScreen.y - 10) + padding.top;
+        drawRect(ctx, centerScreen.x, centerScreen.y, rectWidth, rectHeight, 'rgba(0, 0, 0, 0.7)');
+        drawRect(ctx, centerScreen.x - 10, centerScreen.y - 10, rectWidth, rectHeight, '#ffffff');
+        wrapText(ctx, screenText, left, top, maxWidth, lineHeight);
+      }
 
-            var y = SIZE_Y / (screenText.length + 1) - 10;
-
-            for (var i = 0; i < screenText.length; i++) {
-              writeLine(ctx, screenText[i], SIZE_X / 2, y);
-              y = y + 30;
-            }
-          };
-
-          writeText();
-
-          return canvas;
-        };
-
-        var writeLine = function(ctx, line, x, y) {
-          ctx.fillText(line, x, y);
-        };
-
-        document.body.appendChild(drawField());
-      };
+      var screenText;
 
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          var screenText = ['Ооо, великий и могучий', 'Пендальф Синий,', ' ты всех победил!'];
-          drawSreenText(screenText);
+          screenText = 'Ооо, великий и могучий Пендальф Синий, ты всех победил!';
+          drawScreenText(this.ctx, screenText);
           break;
         case Verdict.FAIL:
-          screenText = ['Упс...оказывается', 'ты не так могуч.', 'Подучи заклинания!'];
-          drawSreenText(screenText);
+          screenText = 'Упс...оказывается ты не так могуч. Подучи заклинания!';
+          drawScreenText(this.ctx, screenText);
           break;
         case Verdict.PAUSE:
-          screenText = ['Пауза!', 'Сходи хоть поешь'];
-          drawSreenText(screenText);
+          screenText = 'Пауза! Сходи хоть поешь';
+          drawScreenText(this.ctx, screenText);
           break;
         case Verdict.INTRO:
-          screenText = ['Привет!', 'Сыграем?', 'Нажми на пробел'];
-          drawSreenText(screenText);
+          screenText = 'Привет! Сыграем? Нажми на пробел';
+          drawScreenText(this.ctx, screenText);
           break;
       }
     },
