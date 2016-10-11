@@ -274,7 +274,6 @@ window.Game = (function() {
 
     this.setDeactivated(false);
   };
-
   Game.prototype = {
     /**
      * Текущий уровень игры.
@@ -403,23 +402,76 @@ window.Game = (function() {
         window.removeEventListener('keydown', this._pauseListener);
       }
     },
-
     /**
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+
+      function drawRect(ctx, x, y, rectWidth, rectHeight, color) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + rectWidth + 10, y);
+        ctx.lineTo(x + rectWidth, y + rectHeight - 10);
+        ctx.lineTo(x - 10, y + rectHeight);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
+
+      function wrapText(ctx, text, left, top, maxWidth, lineHeight) {
+        ctx.fillStyle = '#000000';
+        ctx.font = '16px PT Mono';
+        ctx.textBaseline = 'hanging';
+        ctx.textAlign = 'center';
+        var words = text.split(' ');
+        var countWords = words.length;
+        var line = '';
+        for (var n = 0; n < countWords; n++) {
+          var testLine = line + words[n] + ' ';
+          var testWidth = ctx.measureText(testLine).width;
+          if (testWidth > maxWidth) {
+            ctx.fillText(line, left, top);
+            line = words[n] + ' ';
+            top += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+        ctx.fillText(line, left, top);
+      }
+
+      function drawScreenText(ctx, screenText) {
+        var rectWidth = 200;
+        var rectHeight = 130;
+        var centerScreen = {x: (WIDTH - rectWidth) / 2, y: 30};
+        var lineHeight = 20;
+        var padding = {left: 10, top: 30};
+        var maxWidth = rectWidth - padding.left;
+        var left = (centerScreen.x - 10) + padding.left + maxWidth / 2;
+        var top = (centerScreen.y - 10) + padding.top;
+        drawRect(ctx, centerScreen.x, centerScreen.y, rectWidth, rectHeight, 'rgba(0, 0, 0, 0.7)');
+        drawRect(ctx, centerScreen.x - 10, centerScreen.y - 10, rectWidth, rectHeight, '#ffffff');
+        wrapText(ctx, screenText, left, top, maxWidth, lineHeight);
+      }
+
+      var screenText;
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          screenText = 'Ооо, великий и могучий Пендальф Синий, ты всех победил!';
+          drawScreenText(this.ctx, screenText);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          screenText = 'Упс...оказывается ты не так могуч. Подучи заклинания!';
+          drawScreenText(this.ctx, screenText);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          screenText = 'Пауза! Сходи хоть поешь';
+          drawScreenText(this.ctx, screenText);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          screenText = 'Привет! Сыграем? Нажми на пробел';
+          drawScreenText(this.ctx, screenText);
           break;
       }
     },
