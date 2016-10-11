@@ -3,7 +3,7 @@
 (function() {
   var game = new window.Game(document.querySelector('.demo'));
   game.initializeLevelAndStart();
-  game.setGameStatus(window.Game.Verdict.INTRO);
+  game.setGameStatus(window.Game.Verdict.FAIL);
 
   // CONTINUE: 0,
   //   WIN: 1,
