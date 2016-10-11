@@ -5,12 +5,6 @@
   game.initializeLevelAndStart();
   game.setGameStatus(window.Game.Verdict.INTRO);
 
-  // CONTINUE: 0,
-  //   WIN: 1,
-  //   FAIL: 2,
-  //   PAUSE: 3,
-  //   INTRO: 4
-
   var formOpenButton = document.querySelector('.reviews-controls-new');
 
   /** @param {MouseEvent} evt */
