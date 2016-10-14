@@ -3,7 +3,7 @@
 (function() {
   var game = new window.Game(document.querySelector('.demo'));
   game.initializeLevelAndStart();
-  game.setGameStatus(window.Game.Verdict.INTRO);
+  game.setGameStatus(window.Game.Verdict.FAIL);
 
   var formOpenButton = document.querySelector('.reviews-controls-new');
 

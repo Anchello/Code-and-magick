@@ -426,6 +426,7 @@ window.Game = (function() {
         var words = text.split(' ');
         var countWords = words.length;
         var line = '';
+        var countLines = 0;
         for (var n = 0; n < countWords; n++) {
           var testLine = line + words[n] + ' ';
           var testWidth = ctx.measureText(testLine).width;
@@ -433,22 +434,26 @@ window.Game = (function() {
             ctx.fillText(line, left, top);
             line = words[n] + ' ';
             top += lineHeight;
+            countLines++;
           } else {
             line = testLine;
           }
         }
         ctx.fillText(line, left, top);
+        countLines++;
+        return countLines;
       }
 
       function drawScreenText(ctx, screenText) {
         var rectWidth = 200;
-        var rectHeight = 130;
         var centerScreen = {x: (WIDTH - rectWidth) / 2, y: 30};
         var lineHeight = 20;
         var padding = {left: 10, top: 30};
         var maxWidth = rectWidth - padding.left;
         var left = (centerScreen.x - 10) + padding.left + maxWidth / 2;
         var top = (centerScreen.y - 10) + padding.top;
+
+        var rectHeight = wrapText(ctx, screenText, left, top, maxWidth, lineHeight) * lineHeight + padding.top * 2;
         drawRect(ctx, centerScreen.x, centerScreen.y, rectWidth, rectHeight, 'rgba(0, 0, 0, 0.7)');
         drawRect(ctx, centerScreen.x - 10, centerScreen.y - 10, rectWidth, rectHeight, '#ffffff');
         wrapText(ctx, screenText, left, top, maxWidth, lineHeight);
