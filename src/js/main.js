@@ -14,6 +14,7 @@
     window.form.open(function() {
       game.setGameStatus(window.Game.Verdict.PAUSE);
       game.setDeactivated(true);
+      // window.form.validate();
     });
   };
 
