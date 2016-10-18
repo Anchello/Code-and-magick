@@ -5,7 +5,8 @@ window.form = (function() {
   var formCloseButton = document.querySelector('.review-form-close');
   var fieldName = document.querySelector('#review-name');
   var fieldMarks = document.getElementsByName('review-mark');
-  var fieldText = document.getElementsByName('#review-text');
+  var fieldText = document.querySelector('#review-text');
+  var buttonSubmit = document.querySelector('.review-submit');
 
   var form = {
     onClose: null,
@@ -15,6 +16,7 @@ window.form = (function() {
      */
     open: function(cb) {
       formContainer.classList.remove('invisible');
+      buttonSubmit.disabled = true;
       cb();
     },
 
@@ -26,25 +28,29 @@ window.form = (function() {
       }
     },
 
-    validateName: function() {
+    validateFields: function() {
       var errorName = document.querySelector('.review-fields-name');
+      var errorText = document.querySelector('.review-fields-text');
+      var errorMessage = document.querySelector('.review-fields');
 
-      if (!fieldName.value) {
+      if (!fieldName.value && !fieldText.value) {
+        errorMessage.style.display = 'inline-block';
+        errorText.style.display = 'inline';
         errorName.style.display = 'inline';
-      } else {
+      } else if ( !fieldName.value ) {
+        errorMessage.style.display = 'inline-block';
+        errorName.style.display = 'inline';
+        errorText.style.display = 'none';
+      } else if ( !fieldText.value ) {
+        errorMessage.style.display = 'inline-block';
         errorName.style.display = 'none';
+        errorText.style.display = 'inline';
+      } else {
+        errorMessage.style.display = 'none';
+        buttonSubmit.disabled = false;
       }
     },
 
-    validateText: function() {
-      var errorText = document.querySelector('.review-fields-text');
-
-      if (!fieldText.value) {
-        errorText.style.display = 'inline';
-      } else {
-        errorText.style.display = 'none';
-      }
-    }
   };
 
   formCloseButton.onclick = function(evt) {
@@ -55,15 +61,16 @@ window.form = (function() {
   fieldMarks.forEach(function(item) {
     item.onchange = function() {
       var valueMark = item.value;
+      return valueMark;
     };
   });
 
   fieldName.oninput = function() {
-    form.validateName();
+    form.validateFields();
   };
-  
+
   fieldText.onchange = function() {
-    form.validateText();
+    form.validateFields();
   };
 
   return form;
