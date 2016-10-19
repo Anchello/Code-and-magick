@@ -4,12 +4,12 @@ window.form = (function() {
   var formContainer = document.querySelector('.overlay-container');
   var formCloseButton = document.querySelector('.review-form-close');
   var fieldName = document.querySelector('#review-name');
-  var fieldMarks = document.getElementsByName('review-mark');
+  var fieldMarks = document.querySelector('.review-form')['review-mark'];
   var fieldText = document.querySelector('#review-text');
   var buttonSubmit = document.querySelector('.review-submit');
   var errorName = document.querySelector('.review-fields-name');
   var errorText = document.querySelector('.review-fields-text');
-  var errorMessage = document.querySelector('.review-fields');
+  var errorBox = document.querySelector('.review-fields');
 
   var form = {
     onClose: null,
@@ -19,7 +19,8 @@ window.form = (function() {
      */
     open: function(cb) {
       formContainer.classList.remove('invisible');
-      // buttonSubmit.disabled = true;
+      form.setErrorTextVisible();
+      buttonSubmit.disabled = true;
       cb();
     },
 
@@ -31,62 +32,33 @@ window.form = (function() {
       }
     },
 
-    // validateFields: function() {
-    //
-    //
-    //   if (!fieldName.value && !fieldText.value) {
-    //     errorMessage.style.display = 'inline-block';
-    //     errorText.style.display = 'inline';
-    //     errorName.style.display = 'inline';
-    //   } else if ( !fieldName.value ) {
-    //     errorMessage.style.display = 'inline-block';
-    //     errorName.style.display = 'inline';
-    //     errorText.style.display = 'none';
-    //   } else if ( !fieldText.value ) {
-    //     errorMessage.style.display = 'inline-block';
-    //     errorName.style.display = 'none';
-    //     errorText.style.display = 'inline';
-    //   } else {
-    //     errorMessage.style.display = 'none';
-    //     buttonSubmit.disabled = false;
-    //   }
-    // },
-
     needToFillName: function() {
-      if ( !fieldName.value ) {
-        errorMessage.style.display = 'inline-block';
-        errorName.style.display = 'inline';
-        errorText.style.display = 'none';
-      }
+      return !fieldName.value;
     },
 
     needToFillText: function() {
-      if ( !fieldText.value ) {
-        errorMessage.style.display = 'inline-block';
-        errorName.style.display = 'none';
-        errorText.style.display = 'inline';
-      }
+      var mark = parseInt(fieldMarks.value, 10);
+      return (mark < 3) && (!fieldText.value);
     },
 
-    setNameErrorVisible: function() {
-      form.needToFillName();
+    setErrorNameVisible: function() {
+      errorName.style.visibility = form.needToFillName() ? 'visible' : 'hidden';
     },
 
-    setTextErrorVisible: function() {
-      form.needToFillText();
+    setErrorTextVisible: function() {
+      errorText.style.visibility = form.needToFillText() ? 'visible' : 'hidden';
+    },
+
+    setErrorsBoxVisible: function() {
+      errorBox.style.visibility = form.needToFillName() || form.needToFillText() ? 'visible' : 'hidden';
+    },
+
+    validate: function() {
+      form.setErrorNameVisible();
+      form.setErrorTextVisible();
+      form.setErrorsBoxVisible();
+      buttonSubmit.disabled = form.needToFillName() || form.needToFillText();
     }
-
-    // setErrorsBoxVisible: function() {
-    //   needToFillName() || needToFillText();
-    // },
-    
-
-    // setButtonDisabled: function () {
-    //   if (needToFillName() || needToFillText()) {
-    //     buttonSubmit.disabled = true;
-    //   }
-    // }
-
   };
 
   formCloseButton.onclick = function(evt) {
@@ -94,22 +66,19 @@ window.form = (function() {
     form.close();
   };
 
-  fieldMarks.forEach(function(item) {
-    item.onchange = function() {
-      var valueMark = item.value;
-      return valueMark;
-    };
-  });
-
   fieldName.oninput = function() {
-    form.setNameErrorVisible();
-    // form.validateFields();
+    form.validate();
   };
 
   fieldText.oninput = function() {
-    form.setTextErrorVisible();
-    // form.validateFields();
+    form.validate();
   };
+
+  for(var i = 0; i < fieldMarks.length; i++) {
+    fieldMarks[i].onchange = function() {
+      form.validate();
+    };
+  }
 
   return form;
 })();
