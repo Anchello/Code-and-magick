@@ -430,27 +430,26 @@ window.Game = (function() {
         var words = text.split(' ');
         var lines = [];
         var currentLine = '';
-        var i = 0;
-        for (var n = 0; n < words.length; n++) {
-          var testLine = currentLine + words[n] + ' ';
+        for (var i = 0; i < words.length; i++) {
+          var testLine = currentLine + words[i] + ' ';
           var currentWidth = ctx.measureText(testLine).width;
           if (currentWidth > maxWidth) {
-            lines[i] = currentLine;
-            currentLine = words[n] + ' ';
-            i++;
+            lines.push(currentLine);
+            currentLine = words[i] + ' ';
           } else {
             currentLine = testLine;
           }
         }
-        lines[i] = currentLine;
+        lines.push(currentLine);
         return lines;
       }
 
       function drawText(ctx, text, x, y, maxWidth, lineHeight) {
         var lines = breakTextToLines(ctx, text, maxWidth);
+        var lineY = y;
         for(var i = 0; i < lines.length; i++) {
-          ctx.fillText(lines[i], x, y);
-          y += lineHeight;
+          ctx.fillText(lines[i], x, lineY);
+          lineY += lineHeight;
         }
       }
 

@@ -7,6 +7,9 @@ window.form = (function() {
   var fieldMarks = document.getElementsByName('review-mark');
   var fieldText = document.querySelector('#review-text');
   var buttonSubmit = document.querySelector('.review-submit');
+  var errorName = document.querySelector('.review-fields-name');
+  var errorText = document.querySelector('.review-fields-text');
+  var errorMessage = document.querySelector('.review-fields');
 
   var form = {
     onClose: null,
@@ -16,7 +19,7 @@ window.form = (function() {
      */
     open: function(cb) {
       formContainer.classList.remove('invisible');
-      buttonSubmit.disabled = true;
+      // buttonSubmit.disabled = true;
       cb();
     },
 
@@ -28,28 +31,61 @@ window.form = (function() {
       }
     },
 
-    validateFields: function() {
-      var errorName = document.querySelector('.review-fields-name');
-      var errorText = document.querySelector('.review-fields-text');
-      var errorMessage = document.querySelector('.review-fields');
+    // validateFields: function() {
+    //
+    //
+    //   if (!fieldName.value && !fieldText.value) {
+    //     errorMessage.style.display = 'inline-block';
+    //     errorText.style.display = 'inline';
+    //     errorName.style.display = 'inline';
+    //   } else if ( !fieldName.value ) {
+    //     errorMessage.style.display = 'inline-block';
+    //     errorName.style.display = 'inline';
+    //     errorText.style.display = 'none';
+    //   } else if ( !fieldText.value ) {
+    //     errorMessage.style.display = 'inline-block';
+    //     errorName.style.display = 'none';
+    //     errorText.style.display = 'inline';
+    //   } else {
+    //     errorMessage.style.display = 'none';
+    //     buttonSubmit.disabled = false;
+    //   }
+    // },
 
-      if (!fieldName.value && !fieldText.value) {
-        errorMessage.style.display = 'inline-block';
-        errorText.style.display = 'inline';
-        errorName.style.display = 'inline';
-      } else if ( !fieldName.value ) {
+    needToFillName: function() {
+      if ( !fieldName.value ) {
         errorMessage.style.display = 'inline-block';
         errorName.style.display = 'inline';
         errorText.style.display = 'none';
-      } else if ( !fieldText.value ) {
+      }
+    },
+
+    needToFillText: function() {
+      if ( !fieldText.value ) {
         errorMessage.style.display = 'inline-block';
         errorName.style.display = 'none';
         errorText.style.display = 'inline';
-      } else {
-        errorMessage.style.display = 'none';
-        buttonSubmit.disabled = false;
       }
     },
+
+    setNameErrorVisible: function() {
+      form.needToFillName();
+    },
+
+    setTextErrorVisible: function() {
+      form.needToFillText();
+    }
+
+    // setErrorsBoxVisible: function() {
+    //   needToFillName() || needToFillText();
+    // },
+    
+
+    // setButtonDisabled: function () {
+    //   if (needToFillName() || needToFillText()) {
+    //     buttonSubmit.disabled = true;
+    //   }
+    // }
 
   };
 
@@ -66,11 +102,13 @@ window.form = (function() {
   });
 
   fieldName.oninput = function() {
-    form.validateFields();
+    form.setNameErrorVisible();
+    // form.validateFields();
   };
 
-  fieldText.onchange = function() {
-    form.validateFields();
+  fieldText.oninput = function() {
+    form.setTextErrorVisible();
+    // form.validateFields();
   };
 
   return form;
