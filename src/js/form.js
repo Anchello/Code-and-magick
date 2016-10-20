@@ -19,8 +19,7 @@ window.form = (function() {
      */
     open: function(cb) {
       formContainer.classList.remove('invisible');
-      form.setErrorTextVisible();
-      buttonSubmit.disabled = true;
+      form.validate();
       cb();
     },
 
@@ -41,22 +40,22 @@ window.form = (function() {
       return (mark < 3) && (!fieldText.value);
     },
 
-    setErrorNameVisible: function() {
+    updateErrorNameVisible: function() {
       errorName.style.visibility = form.needToFillName() ? 'visible' : 'hidden';
     },
 
-    setErrorTextVisible: function() {
+    updateErrorNTextVisible: function() {
       errorText.style.visibility = form.needToFillText() ? 'visible' : 'hidden';
     },
 
-    setErrorsBoxVisible: function() {
+    updateErrorBoxVisible: function() {
       errorBox.style.visibility = form.needToFillName() || form.needToFillText() ? 'visible' : 'hidden';
     },
 
     validate: function() {
-      form.setErrorNameVisible();
-      form.setErrorTextVisible();
-      form.setErrorsBoxVisible();
+      form.updateErrorNameVisible();
+      form.updateErrorNTextVisible();
+      form.updateErrorBoxVisible();
       buttonSubmit.disabled = form.needToFillName() || form.needToFillText();
     }
   };
