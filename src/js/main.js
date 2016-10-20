@@ -3,7 +3,7 @@
 (function() {
   var game = new window.Game(document.querySelector('.demo'));
   game.initializeLevelAndStart();
-  game.setGameStatus(window.Game.Verdict.FAIL);
+  game.setGameStatus(window.Game.Verdict.INTRO);
 
   var formOpenButton = document.querySelector('.reviews-controls-new');
 
@@ -14,6 +14,7 @@
     window.form.open(function() {
       game.setGameStatus(window.Game.Verdict.PAUSE);
       game.setDeactivated(true);
+      // window.form.validate();
     });
   };
 

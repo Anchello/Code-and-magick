@@ -418,33 +418,48 @@ window.Game = (function() {
         ctx.fill();
       }
 
-      function wrapText(ctx, text, left, top, maxWidth, lineHeight) {
+      function setTextStyle(ctx) {
         ctx.fillStyle = '#000000';
         ctx.font = '16px PT Mono';
         ctx.textBaseline = 'hanging';
         ctx.textAlign = 'center';
-        var words = text.split(' ');
-        var countWords = words.length;
-        var line = '';
-        var countLines = 0;
-        for (var n = 0; n < countWords; n++) {
-          var testLine = line + words[n] + ' ';
-          var testWidth = ctx.measureText(testLine).width;
-          if (testWidth > maxWidth) {
-            ctx.fillText(line, left, top);
-            line = words[n] + ' ';
-            top += lineHeight;
-            countLines++;
-          } else {
-            line = testLine;
-          }
-        }
-        ctx.fillText(line, left, top);
-        countLines++;
-        return countLines;
       }
 
-      function drawScreenText(ctx, screenText) {
+      function breakTextToLines(ctx, text, maxWidth) {
+        setTextStyle(ctx);
+        var words = text.split(' ');
+        var lines = [];
+        var currentLine = '';
+        for (var i = 0; i < words.length; i++) {
+          var testLine = currentLine + words[i] + ' ';
+          var currentWidth = ctx.measureText(testLine).width;
+          if (currentWidth > maxWidth) {
+            lines.push(currentLine);
+            currentLine = words[i] + ' ';
+          } else {
+            currentLine = testLine;
+          }
+        }
+        lines.push(currentLine);
+        return lines;
+      }
+
+      function drawText(ctx, text, x, y, maxWidth, lineHeight) {
+        var lines = breakTextToLines(ctx, text, maxWidth);
+        var lineY = y;
+        for(var i = 0; i < lines.length; i++) {
+          ctx.fillText(lines[i], x, lineY);
+          lineY += lineHeight;
+        }
+      }
+
+      function getTextHeight(ctx, text, maxWidth, lineHeight) {
+        var lines = breakTextToLines(ctx, text, maxWidth);
+        var textHeight = lines.length * lineHeight;
+        return textHeight;
+      }
+
+      function drawScreenText(ctx, text) {
         var rectWidth = 200;
         var centerScreen = {x: (WIDTH - rectWidth) / 2, y: 30};
         var lineHeight = 20;
@@ -453,10 +468,13 @@ window.Game = (function() {
         var left = (centerScreen.x - 10) + padding.left + maxWidth / 2;
         var top = (centerScreen.y - 10) + padding.top;
 
-        var rectHeight = wrapText(ctx, screenText, left, top, maxWidth, lineHeight) * lineHeight + padding.top * 2;
+        var textHeight = getTextHeight(ctx, text, maxWidth, lineHeight);
+        var rectHeight = textHeight + padding.top * 2;
+
         drawRect(ctx, centerScreen.x, centerScreen.y, rectWidth, rectHeight, 'rgba(0, 0, 0, 0.7)');
         drawRect(ctx, centerScreen.x - 10, centerScreen.y - 10, rectWidth, rectHeight, '#ffffff');
-        wrapText(ctx, screenText, left, top, maxWidth, lineHeight);
+        setTextStyle(ctx);
+        drawText(ctx, text, left, top, maxWidth, lineHeight);
       }
 
       var screenText;
@@ -480,7 +498,6 @@ window.Game = (function() {
           break;
       }
     },
-
     /**
      * Предзагрузка необходимых изображений для уровня.
      * @param {function} callback
