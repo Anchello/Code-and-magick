@@ -79,5 +79,32 @@ window.form = (function() {
     };
   }
 
+  function getStartDate() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var startDate = new Date(year, 11, 9);
+
+    if (startDate > today) {
+      year = year - 1;
+    }
+    startDate = new Date(year, 11, 9);
+    return startDate;
+  }
+
+  function getDaysExpired() {
+    var startDate = getStartDate();
+    var today = new Date();
+    var daysExpired = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+    return daysExpired;
+  }
+
+  buttonSubmit.onclick = function() {
+    var daysExpired = getDaysExpired();
+    var name = fieldName.value;
+    var mark = parseInt(fieldMarks.value, 10);
+    Cookies.set('review-mark', mark, { expires: daysExpired });
+    Cookies.set('review-name', name, { expires: daysExpired });
+  };
+
   return form;
 })();
