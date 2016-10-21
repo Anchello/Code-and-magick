@@ -19,6 +19,7 @@ window.form = (function() {
      */
     open: function(cb) {
       formContainer.classList.remove('invisible');
+      form.setValueForm();
       form.validate();
       cb();
     },
@@ -57,6 +58,53 @@ window.form = (function() {
       form.updateErrorNTextVisible();
       form.updateErrorBoxVisible();
       buttonSubmit.disabled = form.needToFillName() || form.needToFillText();
+    },
+
+    getCookieName: function() {
+      var valueName = window.Cookies.get('review-name');
+      return valueName;
+    },
+
+    getCookieMark: function() {
+      var valueMark = window.Cookies.get('review-mark');
+      return valueMark;
+    },
+
+    setValueForm: function() {
+      var valueName = form.getCookieName();
+      var valueMark = form.getCookieMark();
+      if (typeof valueName !== 'undefined') {
+        fieldName.value = valueName;
+      }
+      if (typeof valueMark !== 'undefined') {
+        fieldMarks.value = valueMark;
+      }
+    },
+
+    getLastBirsday: function() {
+      var today = new Date();
+      var year = today.getFullYear();
+      var startDate = new Date(year, 11, 9);
+      if (startDate > today) {
+        year = year - 1;
+      }
+      startDate = new Date(year, 11, 9);
+      return startDate;
+    },
+
+    getDaysExpired: function() {
+      var startDate = form.getLastBirsday();
+      var today = new Date();
+      var daysExpired = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      return daysExpired;
+    },
+
+    setCookiesValue: function() {
+      var daysExpired = form.getDaysExpired();
+      var name = fieldName.value;
+      var mark = parseInt(fieldMarks.value, 10);
+      window.Cookies.set('review-mark', mark, { expires: daysExpired });
+      window.Cookies.set('review-name', name, { expires: daysExpired });
     }
   };
 
@@ -79,31 +127,8 @@ window.form = (function() {
     };
   }
 
-  function getStartDate() {
-    var today = new Date();
-    var year = today.getFullYear();
-    var startDate = new Date(year, 11, 9);
-
-    if (startDate > today) {
-      year = year - 1;
-    }
-    startDate = new Date(year, 11, 9);
-    return startDate;
-  }
-
-  function getDaysExpired() {
-    var startDate = getStartDate();
-    var today = new Date();
-    var daysExpired = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-    return daysExpired;
-  }
-
   buttonSubmit.onclick = function() {
-    var daysExpired = getDaysExpired();
-    var name = fieldName.value;
-    var mark = parseInt(fieldMarks.value, 10);
-    Cookies.set('review-mark', mark, { expires: daysExpired });
-    Cookies.set('review-name', name, { expires: daysExpired });
+    form.setCookiesValue();
   };
 
   return form;
