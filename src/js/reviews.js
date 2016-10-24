@@ -158,8 +158,15 @@
   function getReviewElement(reviews) {
     var reviewElement = templateContainer.querySelector('.review').cloneNode(true);
     reviewElement.querySelector('.review-author').title = reviews.author.name;
-    reviewElement.querySelector('.review-rating').textContent = reviews.rating;
     reviewElement.querySelector('.review-text').textContent = reviews.description;
+
+    var numberStars = reviews.rating;
+    var reviewRating = reviewElement.querySelector('.review-rating');
+    reviewRating.style.display = 'inline-block';
+
+    for(var i = 1; i < numberStars; i++) {
+      reviewElement.insertBefore(reviewRating.cloneNode(true), reviewRating);
+    }
 
     var imageAuthor = new Image(124, 124);
     var imageAuthorTimeout = null;
@@ -181,7 +188,6 @@
 
     return reviewElement;
   }
-
 
   function renderReviews(reviews) {
     reviews.forEach(function(reviews) {
