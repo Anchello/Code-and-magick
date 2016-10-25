@@ -189,9 +189,9 @@
     return reviewElement;
   }
 
-  function renderReviews(reviewsData) {
-    reviewsData.forEach(function(reviewsData) {
-      container.appendChild(getReviewElement(reviewsData));
+  function renderReviews(reviews) {
+    reviews.forEach(function(reviews) {
+      container.appendChild(getReviewElement(reviews));
     });
   }
 
