@@ -190,8 +190,8 @@
   }
 
   function renderReviews(reviews) {
-    reviews.forEach(function() {
-      container.appendChild(getReviewElement(reviews));
+    reviews.forEach(function(review) {
+      container.appendChild(getReviewElement(review));
     });
   }
 
