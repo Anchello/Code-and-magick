@@ -2,7 +2,7 @@
 
 (function() {
 
-  var reviews = [{
+  var reviewsData = [{
     'author': {
       'name': 'Иванов Иван',
       'picture': 'img/user-1.jpg'
@@ -189,13 +189,13 @@
     return reviewElement;
   }
 
-  function renderReviews(reviews) {
-    reviews.forEach(function(reviews) {
-      container.appendChild(getReviewElement(reviews));
+  function renderReviews(reviewsData) {
+    reviewsData.forEach(function(reviewsData) {
+      container.appendChild(getReviewElement(reviewsData));
     });
   }
 
-  renderReviews(reviews);
+  renderReviews(reviewsData);
 
   hideFilter();
 
