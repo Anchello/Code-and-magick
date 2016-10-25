@@ -190,7 +190,7 @@
   }
 
   function renderReviews(reviews) {
-    reviews.forEach(function(reviews) {
+    reviews.forEach(function(review) {
       container.appendChild(getReviewElement(reviews));
     });
   }
