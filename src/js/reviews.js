@@ -6,13 +6,14 @@
   var template = document.querySelector('template');
   var templateContainer = 'content' in template ? template.content : template;
   var filter = document.querySelector('.reviews-filter');
+  var callbackCounter = 0;
 
   var IMAGE_LOAD_TIMEOUT = 10000;
   var REVIEWS_LOAD_URL = 'http://localhost:1507/api/reviews';
 
   function load(url, callback) {
-
-    var JSONPCallback = 'cb' + Date.now();
+    var JSONPCallback = 'cb' + callbackCounter;
+    callbackCounter++;
 
     window[JSONPCallback] = function(data) {
       callback(data);
@@ -66,8 +67,8 @@
   }
 
   function renderReviews(reviews) {
-    reviews.forEach(function(review) {
-      container.appendChild(getReviewElement(review));
+    reviews.forEach(function(item) {
+      container.appendChild(getReviewElement(item));
     });
   }
 
