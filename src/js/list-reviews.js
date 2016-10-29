@@ -1,6 +1,6 @@
 'use strict';
 
-var getListReviews = (function() {
+function init() {
   var load = require('./load');
   var getReviewElement = require('./review');
   var container = document.querySelector('.reviews-list');
@@ -23,6 +23,6 @@ var getListReviews = (function() {
   load(REVIEWS_LOAD_URL, renderReviews);
 
   showFilter();
-})();
+}
 
-module.exports = getListReviews;
+module.exports.init = init;
