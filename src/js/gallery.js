@@ -27,19 +27,19 @@ var Gallery = function(data) {
     self.hide();
   };
 
-  this.controlLeft.onclick = function() {
-    var index = self.activePicture - 1;
-    if (index > -1) {
-      self.setActivePicture(index);
-    }
-  };
-
-  this.controlRight.onclick = function() {
-    var index = self.activePicture + 1;
-    if (self.numberTotal > index) {
-      self.setActivePicture(index);
-    }
-  };
+  // this.controlLeft.addEventListener('click', function() {
+  //   var index = self.activePicture - 1;
+  //   if (index > -1) {
+  //     self.setActivePicture(index);
+  //   }
+  // });
+  //
+  // this.controlRight.addEventListener('click', function() {
+  //   var index = self.activePicture + 1;
+  //   if (self.numberTotal > index) {
+  //     self.setActivePicture(index);
+  //   }
+  // });
 };
 
 Gallery.prototype = {
@@ -58,30 +58,43 @@ Gallery.prototype = {
       this.preview.appendChild(element);
     }
     //записывает номер показанной фотографии в блок preview-number-current
-    // this.numberCurrent.textContent(this.activePicture);
-    // this.numberTotal.textContent((this.element.length + 1));
+    this.numberCurrentTag.textContent = (this.activePicture + 1);
+    this.numberTotalTag.textContent = this.element.length;
+
+    return this.activePicture;
+  },
+
+  setLeft: function() {
+    var prev = this.activePicture - 1;
+    if (prev > -1) {
+      this.setActivePicture(prev);
+    }
+  },
+
+  setRight: function() {
+    var next = this.activePicture + 1;
+    if (this.numberTotal > next) {
+      this.setActivePicture(next);
+    }
   },
 
   show: function(index) {
-    // Добавляет обработчики событий DOM-элементам галереи.
     //Показывает фотогалерею, убирая у ее DOM-элемента класс invisible
     this.container.classList.remove('invisible');
     //Вызывает метод setActivePicture, передав в него параметром число, которое было передано параметром в show
     this.setActivePicture(index);
+    // Добавляет обработчики событий DOM-элементам галереи.
+    this.controlLeft.addEventListener('click', this.setLeft);
+    this.controlRight.addEventListener('click', this.setRight);
   },
 
   hide: function() {
     //Добавлет DOM-элементу фотогалереи класс invisible.
     this.container.classList.add('invisible');
     // Удаляет обработчики событий, записывая в них значение null
+    this.controlLeft.removeEventListener('click', this.setLeft);
+    this.controlRight.removeEventListener('click', this.setRight);
   }
 };
 
-//В блоке main.js получите массив с адресами всех фотографий, лежащих в блоке photogallery
-var photoList = document.querySelectorAll('.photogallery-image img');
-var photos = Array.prototype.slice.call(photoList);
-var srcPhotos = photos.map(function(item) {
-  return item.getAttribute('src');
-});
-
-var gallery = new Gallery(srcPhotos);
+module.exports = Gallery;
