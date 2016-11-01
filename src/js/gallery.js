@@ -14,42 +14,24 @@ var Gallery = function(data) {
   this.numberTotal = this.element.length;
 
   var self = this;
-
-  var elements = Array.prototype.slice.call(this.element);
-
-  elements.forEach(function(element, i) {
-    element.addEventListener('click', function() {
-      self.show(i);
-    });
-  });
+  //Сохранение контекста в функции-обертке
+  this.onClickLeft = this.setLeft.bind(this);
+  this.onClickRight = this.setRight.bind(this);
 
   this.closeButton.onclick = function() {
     self.hide();
   };
-
-  // this.controlLeft.addEventListener('click', function() {
-  //   var index = self.activePicture - 1;
-  //   if (index > -1) {
-  //     self.setActivePicture(index);
-  //   }
-  // });
-  //
-  // this.controlRight.addEventListener('click', function() {
-  //   var index = self.activePicture + 1;
-  //   if (self.numberTotal > index) {
-  //     self.setActivePicture(index);
-  //   }
-  // });
 };
 
 Gallery.prototype = {
-
+  /**
+   * Создает новый элемент - изображение.
+   * Устанавливает номер картинки в фотогаллерее
+   * @param {number} index
+   */
   setActivePicture: function(index) {
-    //принимает на вход число и записывает его в свойство activePicture
     this.activePicture = index;
-    //находит в массиве pictures фотографию с нужным индексом, создает для нее DOM-элемент Image с помощью конструктора,
-    // записывает ему src нужной фотографии и ставит его в конец блока overlay-gallery-preview
-    var element = new Image(302, 302);
+    var element = new Image(500, 500);
     element.src = this.pictures[index];
     var oldElement = this.preview.querySelector('img');
     if(oldElement) {
@@ -57,7 +39,6 @@ Gallery.prototype = {
     } else {
       this.preview.appendChild(element);
     }
-    //записывает номер показанной фотографии в блок preview-number-current
     this.numberCurrentTag.textContent = (this.activePicture + 1);
     this.numberTotalTag.textContent = this.element.length;
 
@@ -77,23 +58,21 @@ Gallery.prototype = {
       this.setActivePicture(next);
     }
   },
-
+  /**
+   * Показывает галлерею.
+   * @param {number} index
+   */
   show: function(index) {
-    //Показывает фотогалерею, убирая у ее DOM-элемента класс invisible
     this.container.classList.remove('invisible');
-    //Вызывает метод setActivePicture, передав в него параметром число, которое было передано параметром в show
     this.setActivePicture(index);
-    // Добавляет обработчики событий DOM-элементам галереи.
-    this.controlLeft.addEventListener('click', this.setLeft);
-    this.controlRight.addEventListener('click', this.setRight);
+    this.controlLeft.addEventListener('click', this.onClickLeft);
+    this.controlRight.addEventListener('click', this.onClickRight);
   },
 
   hide: function() {
-    //Добавлет DOM-элементу фотогалереи класс invisible.
     this.container.classList.add('invisible');
-    // Удаляет обработчики событий, записывая в них значение null
-    this.controlLeft.removeEventListener('click', this.setLeft);
-    this.controlRight.removeEventListener('click', this.setRight);
+    this.controlLeft.removeEventListener('click', this.onClickLeft);
+    this.controlRight.removeEventListener('click', this.onClickRight);
   }
 };
 

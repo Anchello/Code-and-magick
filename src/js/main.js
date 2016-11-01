@@ -1,14 +1,16 @@
 'use strict';
 
 var listReviews = require('./list-reviews');
-listReviews.init();
 var Game = require('./game');
+var form = require('./form');
+var Gallery = require('./gallery');
+
 var game = new Game(document.querySelector('.demo'));
 game.initializeLevelAndStart();
 game.setGameStatus(Game.Verdict.INTRO);
 
+listReviews.init();
 
-var form = require('./form');
 var formOpenButton = document.querySelector('.reviews-controls-new');
 
 /** @param {MouseEvent} evt */
@@ -25,12 +27,18 @@ form.onClose = function() {
   game.setDeactivated(false);
 };
 
-//В блоке main.js получите массив с адресами всех фотографий, лежащих в блоке photogallery
 var picturesList = document.querySelectorAll('.photogallery-image img');
 var pictures = Array.prototype.slice.call(picturesList);
-var picturesSrc = pictures.map(function(item) {
+var dataPictures = pictures.map(function(item) {
   return item.getAttribute('src');
 });
 
-var Gallery = require('./gallery');
-var gallery = new Gallery(picturesSrc);
+var gallery = new Gallery(dataPictures);
+var galleryButtonsList = document.querySelectorAll('.photogallery-image');
+var galleryButtons = Array.prototype.slice.call(galleryButtonsList);
+
+galleryButtons.forEach(function(element, index) {
+  element.addEventListener('click', function() {
+    gallery.show(index);
+  });
+});
