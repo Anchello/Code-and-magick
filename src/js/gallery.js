@@ -26,7 +26,7 @@ var Gallery = function(data) {
 Gallery.prototype = {
   /**
    * Создает новый элемент - изображение.
-   * Устанавливает номер картинки в фотогаллерее
+   * Устанавливает номер картинки в фотогалерее
    * @param {number} index
    */
   setActivePicture: function(index) {
@@ -59,7 +59,7 @@ Gallery.prototype = {
     }
   },
   /**
-   * Показывает галлерею.
+   * Показывает галерею.
    * @param {number} index
    */
   show: function(index) {
