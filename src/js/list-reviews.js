@@ -2,7 +2,7 @@
 
 function init() {
   var load = require('./load');
-  var getReviewElement = require('./review');
+  var Review = require('./review');
   var container = document.querySelector('.reviews-list');
   var filter = document.querySelector('.reviews-filter');
   var REVIEWS_LOAD_URL = 'http://localhost:1507/api/reviews';
@@ -14,7 +14,8 @@ function init() {
   }
   function renderReviews(reviews) {
     reviews.forEach(function(item) {
-      container.appendChild(getReviewElement(item));
+      var reviewItem = new Review(item);
+      container.appendChild(reviewItem.element);
     });
   }
 
