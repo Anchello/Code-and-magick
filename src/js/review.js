@@ -48,7 +48,7 @@ var Review = function(data) {
       }
       evt.target.classList.add('review-quiz-answer-active');
     }
-  };
+  }
   this.setActiveQuizAnswer = _setActiveQuizAnswer.bind(this);
 
   this.quiz.addEventListener('click', this.setActiveQuizAnswer);
