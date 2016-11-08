@@ -38,9 +38,9 @@ var Review = function(data) {
   imageAuthorTimeout = setTimeout(function() {
     self.element.classList.add('review-load-failure');
   }, IMAGE_LOAD_TIMEOUT);
-  var quiz = this.element.querySelector('.review-quiz');
+  this.quiz = this.element.querySelector('.review-quiz');
 
-  quiz.addEventListener('click', function(evt) {
+  function _setActiveQuizAnswer(evt) {
     if (evt.target.classList.contains('review-quiz-answer')) {
       var activeQuizAnswer = evt.target.parentNode.querySelector('.review-quiz-answer-active');
       if (activeQuizAnswer) {
@@ -48,12 +48,15 @@ var Review = function(data) {
       }
       evt.target.classList.add('review-quiz-answer-active');
     }
-  });
+  };
+  this.setActiveQuizAnswer = _setActiveQuizAnswer.bind(this);
+
+  this.quiz.addEventListener('click', this.setActiveQuizAnswer);
 };
 
 Review.prototype = {
   remove: function() {
-
+    this.quiz.removeEventListener('click', this.setActiveQuizAnswer);
   }
 };
 
