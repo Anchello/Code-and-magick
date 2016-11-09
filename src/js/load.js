@@ -3,8 +3,14 @@
 function load(url, params, callback) {
   var xhr = new XMLHttpRequest();
 
+  function getSearchString(params) {
+    return Object.keys(params).map(function(param) {
+      return [param, params[param]].join('=');
+    }).join('&');
+  }
+
   /** @param {ProgressEvent} evt */
-  xhr.addEventListener('load', function(evt) {
+  xhr.onload = function(evt) {
     try {
       var loadedData = JSON.parse(evt.target.response);
       callback(loadedData);
@@ -12,17 +18,13 @@ function load(url, params, callback) {
       console.log(err);
     }
     console.log(loadedData);
-  });
-  // xhr.open('GET', url);
+  };
 
   xhr.open('GET', url + '?' + getSearchString(params));
+
   xhr.send();
 
-  function getSearchString(params) {
-    return Object.keys(params).map(function(param) {
-      return [param, params[param]].join('=');
-    }).join('&');
-  }
+  console.log(params);
 }
 
 module.exports = load;

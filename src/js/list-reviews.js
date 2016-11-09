@@ -3,11 +3,9 @@
 function init() {
   var load = require('./load');
   var Review = require('./review');
-  var list = require('../../bin/data/get-page');
   var container = document.querySelector('.reviews-list');
-  var filter = document.querySelector('.reviews-filter');
+  var filters = document.querySelector('.reviews-filter');
   var controlReview = document.querySelector('.reviews-controls-more');
-
   /** @constant {string} */
   var REVIEWS_LOAD_URL = 'http://localhost:1507/api/reviews';
   /** @constant {number} */
@@ -17,13 +15,23 @@ function init() {
   // var reviews = [];
   /** @type {Array.<Object>} */
   // var filteredHotels = [];
+  /** @enum {number} */
 
+  var filterId = {
+    'ALL': 'reviews-all',
+    'RECENT': 'reviews-recent',
+    'GOOD': 'reviews-good',
+    'BAD': 'reviews-bad',
+    'POPULAR': 'reviews-popular'
+  };
+
+  var activeFilter = filterId.ALL;
 
   function hideFilter() {
-    filter.classList.add('invisible');
+    filters.classList.add('invisible');
   }
   function showFilter() {
-    filter.classList.remove('invisible');
+    filters.classList.remove('invisible');
   }
   function showControlReview() {
     controlReview.classList.remove('invisible');
@@ -32,16 +40,19 @@ function init() {
    * Отрисовка отзывов
    * @param {Array.<Object>} reviews
    */
-  function renderReviews(loadedReviews) {
-    /** @type {number} */
-    // var page = 0;
-    var from = pageNumber * PAGE_SIZE;
-    var to = from + PAGE_SIZE;
-    list(loadedReviews, from, to).forEach(function(item) {
+  function renderReviews(loaded) {
+    loaded.forEach(function(item) {
       var reviewItem = new Review(item);
       container.appendChild(reviewItem.element);
     });
   }
+
+ function changeFilter(filterID) {
+    container.innerHTML = '';
+    activeFilter = filterID;
+    pageNumber = 0;
+    loadHotels(filterID, pageNumber);
+  };
 
   hideFilter();
   /**
@@ -49,12 +60,13 @@ function init() {
    * @param {Array.<Object>} filter
    * @param {number} currentPageNumber
    */
-  function loadReviews(currentPageNumber) {
+  function loadReviews(filter, currentPageNumber) {
     load(REVIEWS_LOAD_URL,
       {from: currentPageNumber * PAGE_SIZE,
         to: currentPageNumber * PAGE_SIZE + PAGE_SIZE
-        // filter: filter
-      }, renderReviews);
+        filter: filter
+      },
+        renderReviews);
   }
 
   showFilter();
@@ -74,9 +86,13 @@ function init() {
 
   controlReview.addEventListener('click', function() {
     // if (isNextPageAvailable(reviews, pageNumber, PAGE_SIZE)) {
-    pageNumber++;
-    loadReviews(pageNumber);
-    console.log(pageNumber);
+    loadReviews(++pageNumber);
+    // }
+  });
+
+  filters.addEventListener('change', function(evt) {
+    // if (evt.target.classList.contains('reviews-filter-item')) {
+      changeFilter(evt.target.id);
     // }
   });
 }
