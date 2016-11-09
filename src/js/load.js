@@ -3,12 +3,6 @@
 function load(url, params, callback) {
   var xhr = new XMLHttpRequest();
 
-  function getSearchString(params) {
-    return Object.keys(params).map(function(param) {
-      return [param, params[param]].join('=');
-    }).join('&');
-  }
-
   /** @param {ProgressEvent} evt */
   xhr.onload = function(evt) {
     try {
@@ -17,14 +11,11 @@ function load(url, params, callback) {
     } catch(err) {
       console.log(err);
     }
-    console.log(loadedData);
   };
 
-  xhr.open('GET', url + '?' + getSearchString(params));
+  xhr.open('GET', url + '?from=' + params.from + '&to' + params.to + '&filter=' + params.filter);
 
   xhr.send();
-
-  console.log(params);
 }
 
 module.exports = load;
