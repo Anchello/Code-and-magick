@@ -1,18 +1,28 @@
 'use strict';
 
-var callbackCounter = 0;
+function load(url, params, callback) {
+  var xhr = new XMLHttpRequest();
 
-function load(url, callback) {
-  var JSONPCallback = 'cb' + callbackCounter;
-  callbackCounter++;
+  /** @param {ProgressEvent} evt */
+  xhr.addEventListener('load', function(evt) {
+    try {
+      var loadedData = JSON.parse(evt.target.response);
+      callback(loadedData);
+    } catch(err) {
+      console.log(err);
+    }
+    console.log(loadedData);
+  });
+  // xhr.open('GET', url);
 
-  window[JSONPCallback] = function(data) {
-    callback(data);
-  };
+  xhr.open('GET', url + '?' + getSearchString(params));
+  xhr.send();
 
-  var script = document.createElement('script');
-  script.src = url + '?callback=' + JSONPCallback;
-  document.body.appendChild(script);
+  function getSearchString(params) {
+    return Object.keys(params).map(function(param) {
+      return [param, params[param]].join('=');
+    }).join('&');
+  }
 }
 
 module.exports = load;

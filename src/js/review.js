@@ -17,7 +17,7 @@ var Review = function(data) {
   for(var i = 1; i < numberStars; i++) {
     this.element.insertBefore(reviewRating.cloneNode(true), reviewRating);
   }
-
+  /** @constant {number} */
   var IMAGE_LOAD_TIMEOUT = 10000;
 
   var imageAuthor = new Image(124, 124);
@@ -40,6 +40,7 @@ var Review = function(data) {
   }, IMAGE_LOAD_TIMEOUT);
   this.quiz = this.element.querySelector('.review-quiz');
 
+  /** @param {ProgressEvent} evt */
   function _setActiveQuizAnswer(evt) {
     if (evt.target.classList.contains('review-quiz-answer')) {
       var activeQuizAnswer = evt.target.parentNode.querySelector('.review-quiz-answer-active');
