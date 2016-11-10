@@ -10,15 +10,19 @@ function init() {
   var PAGE_SIZE = 3;
   var pageNumber = 0;
   var activeFilter = 'reviews-all';
-
-  function hideFilter() {
-    filters.classList.add('invisible');
+  /**
+   * Скрытие элемента
+   * @param {Object} element
+   */
+  function hideElement(element) {
+    element.classList.add('invisible');
   }
-  function showFilter() {
-    filters.classList.remove('invisible');
-  }
-  function showControlReview() {
-    controlReview.classList.remove('invisible');
+  /**
+   * Отображение элемента
+   * @param {Object} element
+   */
+  function showElement(element) {
+    element.classList.remove('invisible');
   }
   /**
    * Отрисовка отзыва
@@ -31,7 +35,7 @@ function init() {
     });
   }
 
-  hideFilter();
+  hideElement(filters);
   /**
    * Загрузка списка отзывов постранично
    * @param {Array.<Object>} filter
@@ -46,8 +50,8 @@ function init() {
         renderReviews);
   }
 
-  showFilter();
-  showControlReview();
+  showElement(filters);
+  showElement(controlReview);
   /**
    * Изменение фильтра, очистка списка и его новая загрузка
    * @param {Array.<Object>} filter
@@ -60,9 +64,8 @@ function init() {
   }
 
   filters.addEventListener('change', function(evt) {
-    if (evt.target.classList.contains('reviews-filter-item')) {
-      var filterId = evt.target.getAttribute('for');
-      changeFilter(filterId);
+    if (evt.target.name === 'reviews') {
+      changeFilter(evt.target.id);
     }
   }, true);
 

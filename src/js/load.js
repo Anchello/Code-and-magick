@@ -13,7 +13,7 @@ function load(url, params, callback) {
     }
   };
 
-  xhr.open('GET', url + '?from=' + params.from + '&to' + params.to + '&filter=' + params.filter);
+  xhr.open('GET', url + '?from=' + params.from + '&to=' + params.to + '&filter=' + params.filter);
 
   xhr.send();
 }
