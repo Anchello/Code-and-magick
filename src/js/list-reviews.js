@@ -28,30 +28,45 @@ function init() {
    * Отрисовка отзыва
    * @param {Array.<Object>} loadedReviews
    */
-  function renderReviews(loadedReviews) {
+  function _renderReviews(loadedReviews) {
     loadedReviews.forEach(function(item) {
       var reviewItem = new Review(item);
       container.appendChild(reviewItem.element);
     });
   }
-
-  hideElement(filters);
   /**
    * Загрузка списка отзывов постранично
    * @param {Array.<Object>} filter
    * @param {number} currentPageNumber
    */
   function loadReviews(filter, currentPageNumber) {
-    load(REVIEWS_LOAD_URL,
-      {from: currentPageNumber * PAGE_SIZE,
-        to: currentPageNumber * PAGE_SIZE + PAGE_SIZE,
-        filter: filter
-      },
-        renderReviews);
+    var params = {
+      from: currentPageNumber * PAGE_SIZE,
+      to: currentPageNumber * PAGE_SIZE + PAGE_SIZE,
+      filter: filter
+    };
+    load(REVIEWS_LOAD_URL, params, getReviews);
+    showElement(filters);
   }
-
-  showElement(filters);
-  showElement(controlReview);
+  /**
+   * Получение списка отзывов
+   * @param {Array} loadedReviews
+   */
+  function getReviews(loadedReviews) {
+    _renderReviews(loadedReviews);
+    _isControlReviewVisible(loadedReviews);
+  }
+  /**
+   * Проверка видимость кнопки "Еще отзывы"
+   * @param {Array} loadedReviews
+   */
+  function _isControlReviewVisible(loadedReviews) {
+    if (loadedReviews.length === PAGE_SIZE) {
+      showElement(controlReview);
+    } else {
+      hideElement(controlReview);
+    }
+  }
   /**
    * Изменение фильтра, очистка списка и его новая загрузка
    * @param {Array.<Object>} filter
@@ -62,6 +77,8 @@ function init() {
     pageNumber = 0;
     loadReviews(filter, pageNumber);
   }
+  hideElement(filters);
+  changeFilter(activeFilter);
 
   filters.addEventListener('change', function(evt) {
     if (evt.target.name === 'reviews') {
@@ -69,25 +86,9 @@ function init() {
     }
   }, true);
 
-  /**
-   * Проверка наличия загружаемых страниц
-   * @param {Array} reviews
-   * @param {number} page
-   * @param {number} pageSize
-   * @return {boolean}
-   */
-  // function isNextPageAvailable(reviews, page, pageSize) {
-  //   return page < Math.floor(reviews.length / pageSize);
-  // }
-
   controlReview.addEventListener('click', function() {
     loadReviews(activeFilter, ++pageNumber);
-    // if (isNextPageAvailable(loadedReviews, pageNumber, PAGE_SIZE)) {
-    // loadReviews(activeFilter, ++pageNumber);
-    // }
   });
-
-  changeFilter(activeFilter);
 }
 
 module.exports.init = init;
