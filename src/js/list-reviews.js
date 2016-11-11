@@ -28,7 +28,7 @@ function init() {
    * Отрисовка отзыва
    * @param {Array.<Object>} loadedReviews
    */
-  function _renderReviews(loadedReviews) {
+  function renderReviews(loadedReviews) {
     loadedReviews.forEach(function(item) {
       var reviewItem = new Review(item);
       container.appendChild(reviewItem.element);
@@ -45,22 +45,22 @@ function init() {
       to: currentPageNumber * PAGE_SIZE + PAGE_SIZE,
       filter: filter
     };
-    load(REVIEWS_LOAD_URL, params, getReviews);
+    load(REVIEWS_LOAD_URL, params, onReviewsLoad);
     showElement(filters);
   }
   /**
-   * Получение списка отзывов
+   * Выполнение после загрузки списка отзывов
    * @param {Array} loadedReviews
    */
-  function getReviews(loadedReviews) {
-    _renderReviews(loadedReviews);
-    _isControlReviewVisible(loadedReviews);
+  function onReviewsLoad(loadedReviews) {
+    renderReviews(loadedReviews);
+    setControlReviewVisible(loadedReviews);
   }
   /**
-   * Проверка видимость кнопки "Еще отзывы"
+   * Установка видимость кнопки "Еще отзывы"
    * @param {Array} loadedReviews
    */
-  function _isControlReviewVisible(loadedReviews) {
+  function setControlReviewVisible(loadedReviews) {
     if (loadedReviews.length === PAGE_SIZE) {
       showElement(controlReview);
     } else {
