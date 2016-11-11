@@ -1,45 +1,48 @@
 'use strict';
 
-var Review = function(data) {
-  this.data = data;
+function getElement(data) {
   var template = document.querySelector('template');
   var templateContainer = 'content' in template ? template.content : template;
-  this.element = templateContainer.querySelector('.review').cloneNode(true);
+  var element = templateContainer.querySelector('.review').cloneNode(true);
+  var numberStars = data.rating;
+  var reviewRating = element.querySelector('.review-rating');
+  var imageAuthor = new Image(124, 124);
+  var imageAuthorTimeout = null;
+  /** @constant {number} */
+  var IMAGE_LOAD_TIMEOUT = 10000;
 
-  this.element.querySelector('.review-author').title = this.data.author.name;
-  this.element.querySelector('.review-text').textContent = this.data.description;
-
-  var numberStars = this.data.rating;
-  var reviewRating = this.element.querySelector('.review-rating');
-
+  element.querySelector('.review-author').title = data.author.name;
+  element.querySelector('.review-text').textContent = data.description;
   reviewRating.style.display = 'inline-block';
 
   for(var i = 1; i < numberStars; i++) {
-    this.element.insertBefore(reviewRating.cloneNode(true), reviewRating);
+    element.insertBefore(reviewRating.cloneNode(true), reviewRating);
   }
-
-  var IMAGE_LOAD_TIMEOUT = 10000;
-
-  var imageAuthor = new Image(124, 124);
-  var imageAuthorTimeout = null;
-  var self = this;
 
   imageAuthor.onload = function() {
     clearTimeout(imageAuthorTimeout);
-    self.element.querySelector('.review-author').src = self.data.author.picture;
+    element.querySelector('.review-author').src = data.author.picture;
   };
 
   imageAuthor.onerror = function() {
-    self.element.classList.add('review-load-failure');
+    element.classList.add('review-load-failure');
   };
 
-  imageAuthor.src = this.data.author.picture;
+  imageAuthor.src = data.author.picture;
 
   imageAuthorTimeout = setTimeout(function() {
-    self.element.classList.add('review-load-failure');
+    element.classList.add('review-load-failure');
   }, IMAGE_LOAD_TIMEOUT);
+  return element;
+}
+
+var Review = function(data) {
+  this.data = data;
+  this.element = getElement(data);
+
   this.quiz = this.element.querySelector('.review-quiz');
 
+  /** @param {ProgressEvent} evt */
   function _setActiveQuizAnswer(evt) {
     if (evt.target.classList.contains('review-quiz-answer')) {
       var activeQuizAnswer = evt.target.parentNode.querySelector('.review-quiz-answer-active');
