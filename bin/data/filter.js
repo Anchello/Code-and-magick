@@ -12,28 +12,31 @@ module.exports = function(list, filterId) {
 
   switch(filterId) {
     case filterType.RECENT:
-      filteredReviews = filteredReviews.filter(function(item) {
-        return item.created > Date.now() - 3 * 24 * 60 * 60 * 1000;
-      })
-      .sort(function(a, b) {
-        return b.created - a.created;
-      });
+      filteredReviews = filteredReviews
+          .filter(function(item) {
+            return item.created > Date.now() - 3 * 24 * 60 * 60 * 1000;
+          })
+          .sort(function(a, b) {
+            return b.created - a.created;
+          });
       break;
     case filterType.GOOD:
-      filteredReviews = filteredReviews.filter(function(item) {
-        return item.rating >= 3;
-      })
-      .sort(function(a, b) {
-        return b.rating - a.rating;
-      });
+      filteredReviews = filteredReviews
+          .filter(function(item) {
+            return item.rating >= 3;
+          })
+          .sort(function(a, b) {
+            return b.rating - a.rating;
+          });
       break;
     case filterType.BAD:
-      filteredReviews = filteredReviews.filter(function(item) {
-        return item.rating < 3;
-      })
-      .sort(function(a, b) {
-        return a.rating - b.rating;
-      });
+      filteredReviews = filteredReviews
+          .filter(function(item) {
+            return item.rating < 3;
+          })
+          .sort(function(a, b) {
+            return a.rating - b.rating;
+          });
       break;
     case filterType.POPULAR:
       filteredReviews = filteredReviews.sort(function(a, b) {
