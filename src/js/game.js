@@ -13,6 +13,11 @@ var HEIGHT = 300;
  */
 var WIDTH = 700;
 
+var THROTTLE_TIMEOUT = 200;
+var lastCall = Date.now();
+var clouds = document.querySelector('.header-clouds');
+var backgroundPositionClouds = window.getComputedStyle(clouds).backgroundPositionX;
+var demo = document.querySelector('.demo');
 /**
  * ID уровней.
  * @enum {number}
@@ -271,6 +276,9 @@ var Game = function(container) {
   this._onKeyDown = this._onKeyDown.bind(this);
   this._onKeyUp = this._onKeyUp.bind(this);
   this._pauseListener = this._pauseListener.bind(this);
+  this._isElementVisible = this._isElementVisible.bind(this);
+  this._changePositionClouds = this._changePositionClouds.bind(this);
+  this._onScroll = this._onScroll.bind(this);
 
   this.setDeactivated(false);
 };
@@ -764,10 +772,37 @@ Game.prototype = {
     }
   },
 
+  _isElementVisible: function(element) {
+    var currentBottomElement = element.getBoundingClientRect().bottom;
+    return currentBottomElement > 0;
+  },
+
+  _changePositionClouds: function() {
+    var pageY = window.pageYOffset;
+    var currentBottomClouds = clouds.getBoundingClientRect().bottom;
+    var bottomClouds = currentBottomClouds + pageY;
+    clouds.style.backgroundPositionX = Math.round(parseInt(backgroundPositionClouds, 10) * currentBottomClouds / bottomClouds) + '%';
+  },
+
+  _onScroll: function() {
+    if (this._isElementVisible(clouds)) {
+      this._changePositionClouds();
+    }
+
+    if (Date.now() - lastCall >= THROTTLE_TIMEOUT) {
+      if (this._isElementVisible(demo) === false) {
+        this.setGameStatus(Verdict.PAUSE);
+      }
+      lastCall = Date.now();
+    }
+  },
+
+
   /** @private */
   _initializeGameListeners: function() {
     window.addEventListener('keydown', this._onKeyDown);
     window.addEventListener('keyup', this._onKeyUp);
+    window.addEventListener('scroll', this._onScroll);
   },
 
   /** @private */
@@ -775,6 +810,8 @@ Game.prototype = {
     window.removeEventListener('keydown', this._onKeyDown);
     window.removeEventListener('keyup', this._onKeyUp);
   }
+
+
 };
 
 Game.Verdict = Verdict;
