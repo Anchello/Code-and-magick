@@ -5,7 +5,7 @@ var lastCall = Date.now();
  * @const
  * @type {string}
  */
-var IVISIBLE_CLASS = 'invisible';
+var INVISIBLE_CLASS = 'invisible';
 
 var utils = {
   /**
@@ -33,14 +33,14 @@ var utils = {
    * @param {Object} element
    */
   hideElement: function(element) {
-    element.classList.add(IVISIBLE_CLASS);
+    element.classList.add(INVISIBLE_CLASS);
   },
   /**
    * Отображение элемента
    * @param {Object} element
    */
   showElement: function(element) {
-    element.classList.remove(IVISIBLE_CLASS);
+    element.classList.remove(INVISIBLE_CLASS);
   }
 };
 
