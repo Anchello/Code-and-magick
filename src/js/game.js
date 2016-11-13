@@ -1,6 +1,6 @@
 'use strict';
 
-
+var utils = require('./utils');
 /**
  * @const
  * @type {number}
@@ -13,8 +13,7 @@ var HEIGHT = 300;
  */
 var WIDTH = 700;
 
-var THROTTLE_TIMEOUT = 200;
-var lastCall = Date.now();
+var THROTTLE_TIMEOUT = 100;
 var clouds = document.querySelector('.header-clouds');
 var backgroundPositionClouds = window.getComputedStyle(clouds).backgroundPositionX;
 var demo = document.querySelector('.demo');
@@ -276,7 +275,7 @@ var Game = function(container) {
   this._onKeyDown = this._onKeyDown.bind(this);
   this._onKeyUp = this._onKeyUp.bind(this);
   this._pauseListener = this._pauseListener.bind(this);
-  this._isElementVisible = this._isElementVisible.bind(this);
+  // this._isElementVisible = this._isElementVisible.bind(this);
   this._changePositionClouds = this._changePositionClouds.bind(this);
   this._onScroll = this._onScroll.bind(this);
 
@@ -785,21 +784,16 @@ Game.prototype = {
   },
 
   _onScroll: function() {
-    if (this._cloudsVisible) {
+    var self = this;
+    if (self._cloudsVisible) {
       this._changePositionClouds();
     }
-
-    if (Date.now() - lastCall >= THROTTLE_TIMEOUT) {
-      this._cloudsVisible = this._isElementVisible(clouds);
-      lastCall = Date.now();
-    }
-
-    if (Date.now() - lastCall >= THROTTLE_TIMEOUT) {
-      if (!this._isElementVisible(demo)) {
-        this.setGameStatus(Verdict.PAUSE);
+    utils.throttle(function() {
+      self._cloudsVisible = self._isElementVisible(clouds);
+      if (!self._isElementVisible(demo)) {
+        self.setGameStatus(Verdict.PAUSE);
       }
-      lastCall = Date.now();
-    }
+    }, THROTTLE_TIMEOUT);
   },
 
 
