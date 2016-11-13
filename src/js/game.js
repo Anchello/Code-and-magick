@@ -785,12 +785,17 @@ Game.prototype = {
   },
 
   _onScroll: function() {
-    if (this._isElementVisible(clouds)) {
+    if (this._cloudsVisible) {
       this._changePositionClouds();
     }
 
     if (Date.now() - lastCall >= THROTTLE_TIMEOUT) {
-      if (this._isElementVisible(demo) === false) {
+      this._cloudsVisible = this._isElementVisible(clouds);
+      lastCall = Date.now();
+    }
+
+    if (Date.now() - lastCall >= THROTTLE_TIMEOUT) {
+      if (!this._isElementVisible(demo)) {
         this.setGameStatus(Verdict.PAUSE);
       }
       lastCall = Date.now();
@@ -809,6 +814,7 @@ Game.prototype = {
   _removeGameListeners: function() {
     window.removeEventListener('keydown', this._onKeyDown);
     window.removeEventListener('keyup', this._onKeyUp);
+    window.removeEventListener('keyup', this._onScroll);
   }
 
 
