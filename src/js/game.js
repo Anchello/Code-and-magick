@@ -772,11 +772,6 @@ Game.prototype = {
       this.state.keysPressed.SHIFT = false;
     }
   },
-
-  _isElementVisible: function(element) {
-    var currentBottomElement = element.getBoundingClientRect().bottom;
-    return currentBottomElement > 0;
-  },
   /**
    * Изменение позиции фона с облаками в зависимости от текущего положения этого блока.
    * Используется при вертикальном скроллинге страницы
@@ -787,17 +782,18 @@ Game.prototype = {
     var bottomClouds = currentBottomClouds + pageY;
     clouds.style.backgroundPositionX = Math.round(parseInt(backgroundPositionClouds, 10) * currentBottomClouds / bottomClouds) + '%';
   },
-  /**
-   * После скроллинга страницы выполняются проверки видимости блоков с облаками и игрой.
-   * В зависимости от этого происходит смещение облаков и игра ставится на паузу.
-   */
+      /**
+       * После скроллинга страницы выполняются проверки видимости блоков с облаками и игрой.
+       * В зависимости от этого происходит смещение облаков и игра ставится на паузу.
+       */
   _onScroll: function() {
     var self = this;
+
     if (self._cloudsVisible) {
       this._changePositionClouds();
     }
-    utils.throttle(function() {
-      self._cloudsVisible = utils.isElementVisible(clouds);
+    this.wrapperThrottle = utils.throttle( function() {
+      self._cloudsVisible = self._isElementVisible(clouds);
       if (!utils.isElementVisible(demo)) {
         self.setGameStatus(Verdict.PAUSE);
       }

@@ -1,6 +1,5 @@
 'use strict';
 
-var lastCall = Date.now();
 /**
  * @const
  * @type {string}
@@ -14,10 +13,26 @@ var utils = {
    * @param {number} wait
    */
   throttle: function(fn, wait) {
-    if (Date.now() - lastCall >= wait) {
-      fn();
+    var isThrottled = false,
+      savedArgs,
+      savedThis;
+    function wrapper() {
+      if (isThrottled) { // (2)
+        savedArgs = arguments;
+        savedThis = this;
+        return;
+      }
+      fn.apply(this, arguments);
+      isThrottled = true;
+      setTimeout(function() {
+        isThrottled = false;
+        if (savedArgs) {
+          wrapper.apply(savedThis, savedArgs);
+          savedArgs = savedThis = null;
+        }
+      }, wait);
     }
-    lastCall = Date.now();
+    return wrapper;
   },
   /**
    * Проверка видимости элемента
@@ -30,7 +45,7 @@ var utils = {
   },
   /**
    * Скрытие элемента
-   * @param {Object} element
+   * @param {Object} elementq
    */
   hideElement: function(element) {
     element.classList.add(INVISIBLE_CLASS);
