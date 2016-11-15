@@ -478,25 +478,40 @@ Game.prototype = {
       return textHeight;
     }
 
+    var that = this;
+    var hero = that.state.objects.find(function(obj) {
+      return obj.type === ObjectType.ME;
+    });
+
     function drawScreenText(ctx, text) {
       var rectWidth = 200;
-      var centerScreen = {x: (WIDTH - rectWidth) / 2, y: 30};
-      var lineHeight = 20;
       var padding = {left: 10, top: 30};
+      var lineHeight = 20;
       var maxWidth = rectWidth - padding.left;
-      var left = (centerScreen.x - 10) + padding.left + maxWidth / 2;
-      var top = (centerScreen.y - 10) + padding.top;
-
       var textHeight = getTextHeight(ctx, text, maxWidth, lineHeight);
       var rectHeight = textHeight + padding.top * 2;
-
-      drawRect(ctx, centerScreen.x, centerScreen.y, rectWidth, rectHeight, 'rgba(0, 0, 0, 0.7)');
-      drawRect(ctx, centerScreen.x - 10, centerScreen.y - 10, rectWidth, rectHeight, '#ffffff');
+      var rectCoordinates = {};
+      if (hero.x > WIDTH / 2) {
+        rectCoordinates.x = hero.x - rectWidth;
+      } else {
+        rectCoordinates.x = hero.x + 100;
+      }
+      if (hero.y < HEIGHT / 2) {
+        rectCoordinates.y = hero.y + 50;
+      } else {
+        rectCoordinates.y = hero.y - 50;
+      }
+      var left = (rectCoordinates.x - 10) + padding.left + maxWidth / 2;
+      var top = (rectCoordinates.y - 10) + padding.top;
+      drawRect(ctx, rectCoordinates.x, rectCoordinates.y, rectWidth, rectHeight, 'rgba(0, 0, 0, 0.7)');
+      drawRect(ctx, rectCoordinates.x - 10, rectCoordinates.y - 10, rectWidth, rectHeight, '#ffffff');
       setTextStyle(ctx);
       drawText(ctx, text, left, top, maxWidth, lineHeight);
     }
 
     var screenText;
+
+    // drawText(ctx, text, hero.x + 50, hero.y - 100, maxWidth, lineHeight);
 
     switch (this.state.currentStatus) {
       case Verdict.WIN:
