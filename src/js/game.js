@@ -282,6 +282,16 @@ var Game = function(container) {
   this._onScroll = this._onScroll.bind(this);
 
   this.setDeactivated(false);
+
+  this.throttledOnScroll = utils.throttle( function() {
+    this._cloudsVisible = utils.isElementVisible(clouds);
+
+    this._demoVisible = utils.isElementVisible(demo);
+
+    if (!utils.isElementVisible(demo)) {
+      this.setGameStatus(Verdict.PAUSE);
+    }
+  }, THROTTLE_TIMEOUT);
 };
 Game.prototype = {
   /**
@@ -792,12 +802,7 @@ Game.prototype = {
     if (self._cloudsVisible) {
       this._changePositionClouds();
     }
-    this.wrapperThrottle = utils.throttle( function() {
-      self._cloudsVisible = self._isElementVisible(clouds);
-      if (!utils.isElementVisible(demo)) {
-        self.setGameStatus(Verdict.PAUSE);
-      }
-    }, THROTTLE_TIMEOUT);
+    this.throttledOnScroll();
   },
 
 
