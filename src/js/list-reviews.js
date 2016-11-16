@@ -12,6 +12,29 @@ function init() {
   var pageNumber = 0;
   var activeFilter = 'reviews-all';
   /**
+   * Проверка поддержки localStorage в браузере
+   */
+  function supportLocalStorage() {
+    try {
+      return 'localStorage' in window && window['localStorage'] !== null;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
+  /**
+   * Установка последнего применненного фильтра по умолчанию
+   */
+  function setDefaultFilter() {
+    if (supportLocalStorage()) {
+      var valueFilter = localStorage.getItem('filter');
+      if (valueFilter) {
+        activeFilter = valueFilter;
+        document.getElementById(activeFilter).checked = true;
+      }
+    }
+  }
+  /**
    * Отрисовка отзыва
    * @param {Array.<Object>} loadedReviews
    */
@@ -65,17 +88,22 @@ function init() {
     loadReviews(filter, pageNumber);
   }
   utils.hideElement(filters);
+  setDefaultFilter();
   changeFilter(activeFilter);
 
   filters.addEventListener('change', function(evt) {
     if (evt.target.name === 'reviews') {
       changeFilter(evt.target.id);
     }
+    if (supportLocalStorage()) {
+      localStorage.setItem('filter', evt.target.id);
+    }
   }, true);
 
   controlReview.addEventListener('click', function() {
     loadReviews(activeFilter, ++pageNumber);
   });
+
 }
 
 module.exports.init = init;
