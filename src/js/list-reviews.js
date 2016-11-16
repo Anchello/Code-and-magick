@@ -2,6 +2,7 @@
 
 function init() {
   var load = require('./load');
+  var utils = require('./utils');
   var Review = require('./review');
   var container = document.querySelector('.reviews-list');
   var filters = document.querySelector('.reviews-filter');
@@ -10,20 +11,6 @@ function init() {
   var PAGE_SIZE = 3;
   var pageNumber = 0;
   var activeFilter = 'reviews-all';
-  /**
-   * Скрытие элемента
-   * @param {Object} element
-   */
-  function hideElement(element) {
-    element.classList.add('invisible');
-  }
-  /**
-   * Отображение элемента
-   * @param {Object} element
-   */
-  function showElement(element) {
-    element.classList.remove('invisible');
-  }
   /**
    * Отрисовка отзыва
    * @param {Array.<Object>} loadedReviews
@@ -46,7 +33,7 @@ function init() {
       filter: filter
     };
     load(REVIEWS_LOAD_URL, params, onReviewsLoad);
-    showElement(filters);
+    utils.showElement(filters);
   }
   /**
    * Выполнение после загрузки списка отзывов
@@ -62,9 +49,9 @@ function init() {
    */
   function setControlReviewVisible(loadedReviews) {
     if (loadedReviews.length === PAGE_SIZE) {
-      showElement(controlReview);
+      utils.showElement(controlReview);
     } else {
-      hideElement(controlReview);
+      utils.hideElement(controlReview);
     }
   }
   /**
@@ -77,7 +64,7 @@ function init() {
     pageNumber = 0;
     loadReviews(filter, pageNumber);
   }
-  hideElement(filters);
+  utils.hideElement(filters);
   changeFilter(activeFilter);
 
   filters.addEventListener('change', function(evt) {

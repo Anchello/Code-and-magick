@@ -1,6 +1,6 @@
 'use strict';
 
-
+var utils = require('./utils');
 /**
  * @const
  * @type {number}
@@ -12,9 +12,11 @@ var HEIGHT = 300;
  * @type {number}
  */
 var WIDTH = 700;
-
-var THROTTLE_TIMEOUT = 200;
-var lastCall = Date.now();
+/**
+ * @const
+ * @type {number}
+ */
+var THROTTLE_TIMEOUT = 100;
 var clouds = document.querySelector('.header-clouds');
 var backgroundPositionClouds = window.getComputedStyle(clouds).backgroundPositionX;
 var demo = document.querySelector('.demo');
@@ -276,11 +278,20 @@ var Game = function(container) {
   this._onKeyDown = this._onKeyDown.bind(this);
   this._onKeyUp = this._onKeyUp.bind(this);
   this._pauseListener = this._pauseListener.bind(this);
-  this._isElementVisible = this._isElementVisible.bind(this);
   this._changePositionClouds = this._changePositionClouds.bind(this);
   this._onScroll = this._onScroll.bind(this);
 
   this.setDeactivated(false);
+
+  this.throttledOnScroll = utils.throttle( function() {
+    this._cloudsVisible = utils.isElementVisible(clouds);
+
+    this._demoVisible = utils.isElementVisible(demo);
+
+    if (!utils.isElementVisible(demo)) {
+      this.setGameStatus(Verdict.PAUSE);
+    }
+  }, THROTTLE_TIMEOUT);
 };
 Game.prototype = {
   /**
@@ -467,25 +478,40 @@ Game.prototype = {
       return textHeight;
     }
 
+    var that = this;
+    var hero = that.state.objects.find(function(obj) {
+      return obj.type === ObjectType.ME;
+    });
+
     function drawScreenText(ctx, text) {
       var rectWidth = 200;
-      var centerScreen = {x: (WIDTH - rectWidth) / 2, y: 30};
-      var lineHeight = 20;
       var padding = {left: 10, top: 30};
+      var lineHeight = 20;
       var maxWidth = rectWidth - padding.left;
-      var left = (centerScreen.x - 10) + padding.left + maxWidth / 2;
-      var top = (centerScreen.y - 10) + padding.top;
-
       var textHeight = getTextHeight(ctx, text, maxWidth, lineHeight);
       var rectHeight = textHeight + padding.top * 2;
-
-      drawRect(ctx, centerScreen.x, centerScreen.y, rectWidth, rectHeight, 'rgba(0, 0, 0, 0.7)');
-      drawRect(ctx, centerScreen.x - 10, centerScreen.y - 10, rectWidth, rectHeight, '#ffffff');
+      var rectCoordinates = {};
+      if (hero.x > WIDTH / 2) {
+        rectCoordinates.x = hero.x - rectWidth;
+      } else {
+        rectCoordinates.x = hero.x + 100;
+      }
+      if (hero.y < HEIGHT / 2) {
+        rectCoordinates.y = hero.y + 50;
+      } else {
+        rectCoordinates.y = hero.y - 50;
+      }
+      var left = (rectCoordinates.x - 10) + padding.left + maxWidth / 2;
+      var top = (rectCoordinates.y - 10) + padding.top;
+      drawRect(ctx, rectCoordinates.x, rectCoordinates.y, rectWidth, rectHeight, 'rgba(0, 0, 0, 0.7)');
+      drawRect(ctx, rectCoordinates.x - 10, rectCoordinates.y - 10, rectWidth, rectHeight, '#ffffff');
       setTextStyle(ctx);
       drawText(ctx, text, left, top, maxWidth, lineHeight);
     }
 
     var screenText;
+
+    // drawText(ctx, text, hero.x + 50, hero.y - 100, maxWidth, lineHeight);
 
     switch (this.state.currentStatus) {
       case Verdict.WIN:
@@ -771,35 +797,27 @@ Game.prototype = {
       this.state.keysPressed.SHIFT = false;
     }
   },
-
-  _isElementVisible: function(element) {
-    var currentBottomElement = element.getBoundingClientRect().bottom;
-    return currentBottomElement > 0;
-  },
-
+  /**
+   * Изменение позиции фона с облаками в зависимости от текущего положения этого блока.
+   * Используется при вертикальном скроллинге страницы
+   */
   _changePositionClouds: function() {
     var pageY = window.pageYOffset;
     var currentBottomClouds = clouds.getBoundingClientRect().bottom;
     var bottomClouds = currentBottomClouds + pageY;
     clouds.style.backgroundPositionX = Math.round(parseInt(backgroundPositionClouds, 10) * currentBottomClouds / bottomClouds) + '%';
   },
-
+      /**
+       * После скроллинга страницы выполняются проверки видимости блоков с облаками и игрой.
+       * В зависимости от этого происходит смещение облаков и игра ставится на паузу.
+       */
   _onScroll: function() {
-    if (this._cloudsVisible) {
+    var self = this;
+
+    if (self._cloudsVisible) {
       this._changePositionClouds();
     }
-
-    if (Date.now() - lastCall >= THROTTLE_TIMEOUT) {
-      this._cloudsVisible = this._isElementVisible(clouds);
-      lastCall = Date.now();
-    }
-
-    if (Date.now() - lastCall >= THROTTLE_TIMEOUT) {
-      if (!this._isElementVisible(demo)) {
-        this.setGameStatus(Verdict.PAUSE);
-      }
-      lastCall = Date.now();
-    }
+    this.throttledOnScroll();
   },
 
 
