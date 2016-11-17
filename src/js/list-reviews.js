@@ -18,7 +18,7 @@ function init() {
     try {
       return 'localStorage' in window && window['localStorage'] !== null;
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return false;
     }
   }
@@ -30,7 +30,9 @@ function init() {
       var valueFilter = localStorage.getItem('filter');
       if (valueFilter) {
         activeFilter = valueFilter;
-        document.getElementById(activeFilter).checked = true;
+        if (document.getElementById(activeFilter)) {
+          document.getElementById(activeFilter).checked = true;
+        }
       }
     }
   }
