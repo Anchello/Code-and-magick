@@ -28,11 +28,9 @@ function init() {
   function setDefaultFilter() {
     if (supportLocalStorage()) {
       var valueFilter = localStorage.getItem('filter');
-      if (valueFilter) {
+      if (valueFilter && document.getElementById(activeFilter)) {
         activeFilter = valueFilter;
-        if (document.getElementById(activeFilter)) {
-          document.getElementById(activeFilter).checked = true;
-        }
+        document.getElementById(activeFilter).checked = true;
       }
     }
   }
