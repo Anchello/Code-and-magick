@@ -56,6 +56,16 @@ var utils = {
    */
   showElement: function(element) {
     element.classList.remove(INVISIBLE_CLASS);
+  },
+  /**
+   * Наследование одного класс от другого, продлевая цепочку прототипов с использованием пустого конструктора
+   * @param {Object} Child
+   * @param {Object} Parent
+   */
+  inherit: function(Child, Parent) {
+    var EmptyConstructor = function() {};
+    EmptyConstructor.prototype = Parent.prototype;
+    Child.prototype = new EmptyConstructor();
   }
 };
 
