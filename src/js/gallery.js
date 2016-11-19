@@ -13,14 +13,9 @@ var Gallery = function(data) {
   this.activePicture = null;
   this.numberTotal = this.element.length;
 
-  var self = this;
-  //Сохранение контекста в функции-обертке
   this.onClickLeft = this.setLeft.bind(this);
   this.onClickRight = this.setRight.bind(this);
-
-  this.closeButton.onclick = function() {
-    self.hide();
-  };
+  this.hide = this.hide.bind(this);
 };
 
 Gallery.prototype = {
@@ -67,12 +62,16 @@ Gallery.prototype = {
     this.setActivePicture(index);
     this.controlLeft.addEventListener('click', this.onClickLeft);
     this.controlRight.addEventListener('click', this.onClickRight);
+    this.closeButton.addEventListener('click', this.hide);
   },
-
+  /**
+   * Скрывает галерею и удаляет обработчики событий.
+   */
   hide: function() {
     this.container.classList.add('invisible');
     this.controlLeft.removeEventListener('click', this.onClickLeft);
     this.controlRight.removeEventListener('click', this.onClickRight);
+    this.closeButton.removeEventListener('click', this.hide);
   }
 };
 

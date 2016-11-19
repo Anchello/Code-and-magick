@@ -812,14 +812,11 @@ Game.prototype = {
        * В зависимости от этого происходит смещение облаков и игра ставится на паузу.
        */
   _onScroll: function() {
-    var self = this;
-
-    if (self._cloudsVisible) {
+    if (this._cloudsVisible) {
       this._changePositionClouds();
     }
     this.throttledOnScroll();
   },
-
 
   /** @private */
   _initializeGameListeners: function() {

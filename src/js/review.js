@@ -41,9 +41,15 @@ var Review = function(data) {
   this.element = getElement(data);
 
   this.quiz = this.element.querySelector('.review-quiz');
+  this.setActiveQuizAnswer = this._setActiveQuizAnswer.bind(this);
+};
 
-  /** @param {ProgressEvent} evt */
-  function _setActiveQuizAnswer(evt) {
+Review.prototype = {
+  /**
+   * Установка класса "активный" у ответов "Да", "Нет" о пользе отзыва.
+   * @param {ProgressEvent} evt
+   */
+  _setActiveQuizAnswer: function(evt) {
     if (evt.target.classList.contains('review-quiz-answer')) {
       var activeQuizAnswer = evt.target.parentNode.querySelector('.review-quiz-answer-active');
       if (activeQuizAnswer) {
@@ -51,13 +57,16 @@ var Review = function(data) {
       }
       evt.target.classList.add('review-quiz-answer-active');
     }
-  }
-  this.setActiveQuizAnswer = _setActiveQuizAnswer.bind(this);
-
-  this.quiz.addEventListener('click', this.setActiveQuizAnswer);
-};
-
-Review.prototype = {
+  },
+  /**
+   * Установка обработчика событий.
+   */
+  init: function() {
+    this.quiz.addEventListener('click', this.setActiveQuizAnswer);
+  },
+  /**
+   * Удаление обработчика событий.
+   */
   remove: function() {
     this.quiz.removeEventListener('click', this.setActiveQuizAnswer);
   }
