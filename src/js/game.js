@@ -477,7 +477,6 @@ Game.prototype = {
       var textHeight = lines.length * lineHeight;
       return textHeight;
     }
-    
     var hero = this.state.objects.find(function(obj) {
       return obj.type === ObjectType.ME;
     });
