@@ -477,9 +477,8 @@ Game.prototype = {
       var textHeight = lines.length * lineHeight;
       return textHeight;
     }
-
-    var that = this;
-    var hero = that.state.objects.find(function(obj) {
+    
+    var hero = this.state.objects.find(function(obj) {
       return obj.type === ObjectType.ME;
     });
 
@@ -510,8 +509,6 @@ Game.prototype = {
     }
 
     var screenText;
-
-    // drawText(ctx, text, hero.x + 50, hero.y - 100, maxWidth, lineHeight);
 
     switch (this.state.currentStatus) {
       case Verdict.WIN:
