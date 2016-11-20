@@ -41,6 +41,7 @@ function init() {
   function renderReviews(loadedReviews) {
     loadedReviews.forEach(function(item) {
       var reviewItem = new Review(item);
+      reviewItem.init();
       container.appendChild(reviewItem.element);
     });
   }
