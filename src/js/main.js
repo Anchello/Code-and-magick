@@ -33,7 +33,8 @@ var dataPictures = pictures.map(function(item) {
   return item.getAttribute('src');
 });
 
-var gallery = new Gallery(dataPictures);
+var overlayGallery = document.querySelector('.overlay-gallery');
+var gallery = new Gallery(dataPictures, overlayGallery);
 var galleryButtonsList = document.querySelectorAll('.photogallery-image');
 var galleryButtons = Array.prototype.slice.call(galleryButtonsList);
 
@@ -42,3 +43,4 @@ galleryButtons.forEach(function(element, index) {
     gallery.show(index);
   });
 });
+

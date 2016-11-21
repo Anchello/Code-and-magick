@@ -39,10 +39,12 @@ function init() {
    * @param {Array.<Object>} loadedReviews
    */
   function renderReviews(loadedReviews) {
-    loadedReviews.forEach(function(item) {
-      var reviewItem = new Review(item);
-      reviewItem.init();
-      container.appendChild(reviewItem.element);
+    loadedReviews.forEach(function(data) {
+      var template = document.querySelector('template');
+      var templateContainer = 'content' in template ? template.content : template;
+      var item = templateContainer.querySelector('.review').cloneNode(true);
+      var review = new Review(data, item);
+      container.appendChild(review.item);
     });
   }
   /**
