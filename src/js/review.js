@@ -15,7 +15,7 @@ function getElement(data) {
   element.querySelector('.review-text').textContent = data.description;
   reviewRating.style.display = 'inline-block';
 
-  for(var i = 1; i < numberStars; i++) {
+  for (var i = 1; i < numberStars; i++) {
     element.insertBefore(reviewRating.cloneNode(true), reviewRating);
   }
 

@@ -34,9 +34,17 @@ var form = {
   needToFillName: function() {
     return !fieldName.value;
   },
+  getValueMark: function() {
+    for (var i = 0; i < fieldMarks.length; ++i) {
+      if (fieldMarks[i].checked) {
+        var mark = fieldMarks[i].value;
+      }
+    }
+    return mark;
+  },
 
   needToFillText: function() {
-    var mark = parseInt(fieldMarks.value, 10);
+    var mark = parseInt(form.getValueMark(), 10);
     return (mark < 3) && (!fieldText.value);
   },
 
@@ -66,7 +74,7 @@ var form = {
     if(birsday.getTime() > today.getTime()) {
       return new Date(currentYear - 1, 11, 9);
     } else {
-      return birsday;
+      return new Date(currentYear, 11, 9);
     }
   },
 
@@ -80,7 +88,7 @@ var form = {
   setCookiesValue: function() {
     var daysExpired = form.getDaysExpired();
     var name = fieldName.value;
-    var mark = parseInt(fieldMarks.value, 10);
+    var mark = parseInt(form.getValueMark(), 10);
     window.Cookies.set('review-mark', mark, { expires: daysExpired });
     window.Cookies.set('review-name', name, { expires: daysExpired });
   },
@@ -95,6 +103,14 @@ var form = {
     return valueMark;
   },
 
+  setDefaultMark: function(value) {
+    for (var i = 0; i < fieldMarks.length; ++i) {
+      if (fieldMarks[i].value === value) {
+        fieldMarks[i].checked = true;
+      }
+    }
+  },
+
   setFormValues: function() {
     var valueName = form.getCookieName();
     var valueMark = form.getCookieMark();
@@ -102,7 +118,7 @@ var form = {
       fieldName.value = valueName;
     }
     if (typeof valueMark !== 'undefined') {
-      fieldMarks.value = valueMark;
+      form.setDefaultMark(valueMark);
     }
   }
 };
@@ -120,7 +136,7 @@ fieldText.oninput = function() {
   form.validate();
 };
 
-for(var i = 0; i < fieldMarks.length; i++) {
+for (var i = 0; i < fieldMarks.length; i++) {
   fieldMarks[i].onchange = function() {
     form.validate();
   };

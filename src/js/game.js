@@ -18,7 +18,7 @@ var WIDTH = 700;
  */
 var THROTTLE_TIMEOUT = 100;
 var clouds = document.querySelector('.header-clouds');
-var backgroundPositionClouds = window.getComputedStyle(clouds).backgroundPositionX;
+var backgroundPositionClouds = window.getComputedStyle(clouds).backgroundPosition || '50% 0%';
 var demo = document.querySelector('.demo');
 /**
  * ID уровней.
@@ -466,7 +466,7 @@ Game.prototype = {
     function drawText(ctx, text, x, y, maxWidth, lineHeight) {
       var lines = breakTextToLines(ctx, text, maxWidth);
       var lineY = y;
-      for(var i = 0; i < lines.length; i++) {
+      for (var i = 0; i < lines.length; i++) {
         ctx.fillText(lines[i], x, lineY);
         lineY += lineHeight;
       }
@@ -477,9 +477,9 @@ Game.prototype = {
       var textHeight = lines.length * lineHeight;
       return textHeight;
     }
-    var hero = this.state.objects.find(function(obj) {
+    var hero = this.state.objects.filter(function(obj) {
       return obj.type === ObjectType.ME;
-    });
+    })[0];
 
     function drawScreenText(ctx, text) {
       var rectWidth = 200;
@@ -801,7 +801,11 @@ Game.prototype = {
     var pageY = window.pageYOffset;
     var currentBottomClouds = clouds.getBoundingClientRect().bottom;
     var bottomClouds = currentBottomClouds + pageY;
-    clouds.style.backgroundPositionX = Math.round(parseInt(backgroundPositionClouds, 10) * currentBottomClouds / bottomClouds) + '%';
+    var positions = backgroundPositionClouds.split(' ');
+    var positionX = positions[0].split('%')[0];
+    var backgroundPositionX = Math.round(parseInt(positionX, 10) * currentBottomClouds / bottomClouds) + '%';
+    clouds.style.backgroundPosition = backgroundPositionX + ' ' + positions[1];
+    console.log(clouds.style.backgroundPosition);
   },
       /**
        * После скроллинга страницы выполняются проверки видимости блоков с облаками и игрой.

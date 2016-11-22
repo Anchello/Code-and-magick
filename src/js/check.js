@@ -14,14 +14,14 @@ function getMessage(a, b) {
   } else if (Array.isArray(a)) {
     var numberOfSteps = 0;
 
-    for(var i = 0; i < a.length; i++) {
+    for (var i = 0; i < a.length; i++) {
       numberOfSteps = a[i] + numberOfSteps;
     }
 
     if (Array.isArray(b)) {
       var distancePath = 0;
 
-      for(i = 0; i < Math.min(a.length, b.length); i++) {
+      for (i = 0; i < Math.min(a.length, b.length); i++) {
         distancePath = a[i] * b[i] + distancePath;
       }
       return('Я прошёл ' + distancePath + ' метров');
