@@ -802,7 +802,7 @@ Game.prototype = {
     var bottomClouds = currentBottomClouds + pageY;
     var startPosition = {x: 50, y: 0};
     var backgroundPositionX = Math.round(startPosition.x * currentBottomClouds / bottomClouds);
-    clouds.style.backgroundPosition = backgroundPositionX  + '%' + ' ' + startPosition.y  + '%';
+    clouds.style.backgroundPosition = backgroundPositionX + '%' + ' ' + startPosition.y + '%';
   },
       /**
        * После скроллинга страницы выполняются проверки видимости блоков с облаками и игрой.
