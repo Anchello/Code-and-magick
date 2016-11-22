@@ -18,7 +18,6 @@ var WIDTH = 700;
  */
 var THROTTLE_TIMEOUT = 100;
 var clouds = document.querySelector('.header-clouds');
-var backgroundPositionClouds = window.getComputedStyle(clouds).backgroundPosition;
 var demo = document.querySelector('.demo');
 /**
  * ID уровней.
@@ -801,15 +800,9 @@ Game.prototype = {
     var pageY = window.pageYOffset;
     var currentBottomClouds = clouds.getBoundingClientRect().bottom;
     var bottomClouds = currentBottomClouds + pageY;
-    var positions = backgroundPositionClouds.split(' ');
-    var positionX = positions[0].split('%')[0];
-    var positionY = positions[1];
-    if (typeof positionX !== 'number' || typeof positionY !== 'number') {
-      positionX = '50';
-      positionY = '0%';
-    }
-    var backgroundPositionX = Math.round(parseInt(positionX, 10) * currentBottomClouds / bottomClouds) + '%';
-    clouds.style.backgroundPosition = backgroundPositionX + ' ' + positionY;
+    var startPosition = {x: 50, y: 0};
+    var backgroundPositionX = Math.round(startPosition.x * currentBottomClouds / bottomClouds);
+    clouds.style.backgroundPosition = backgroundPositionX  + '%' + ' ' + startPosition.y  + '%';
   },
       /**
        * После скроллинга страницы выполняются проверки видимости блоков с облаками и игрой.
